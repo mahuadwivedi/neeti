@@ -1,26 +1,34 @@
-import keyboard
-import streamlit as st
-import numpy as np
+import os
+#from anvil import *
+from numpy import *
 import sklearn
 import string
-import nltk         #library for natural language procesing
-import inltk 
+import nltk         #library for natural language processing
+#import inltk 
 import random
 from gtts import gTTS
 from playsound import playsound
+import warnings
+warnings.filterwarnings('ignore')
 
+def speech(text):
+    output=gTTS(text=text, lang='en')
+    filename = "C:/Users/hp/Desktop/Jupyter prog/SIH Chatbot/neeti_audio.mp3"
+    output.save(filename)
+    playsound(filename)
+    os.remove(filename)
+'''
 def speech(txt):
-    print(txt)
     language = 'en'
-    output = gTTS(text=txt, lang=language, slow=False)
-    output.save("C:/mahua/Projects/SIH/neeti_audio.mp3")
-    playsound("C:/mahua/Projects/SIH/neeti_audio.mp3")
-
+    output = gTTS(text=txt, lang=language, slow=True)
+    output.save("C:/Users/hp/Desktop/Jupyter prog/SIH Chatbot/neeti_audio.mp3")
+    playsound("C:/Users/hp/Desktop/Jupyter prog/SIH Chatbot/neeti_audio.mp3")
+'''
 user_response=""
-st.title("ASK 'NEETI' ANYTHING RELATED TO LAW")
+print("ASK 'NEETI' ANYTHING RELATED TO LAW")
 speech("Hi! I am your friend Neeti, The law expert. You can ask me your queries and I shall answer it!")
-path="C:/mahua/Projects/SIH/neeti.txt"
-f=open(path,'r',errors='ignore')
+#path="C:/Users/hp/Desktop/Jupyter prog/SIH Chatbot/neeti.txt"
+f=open("C:/Users/hp/Desktop/Jupyter prog/SIH Chatbot/neeti.txt",'r',errors='ignore')
 raw_doc=f.read()
 raw_doc=raw_doc.lower()         #converts text to lower case for preprocessing
 nltk.download('punkt')          #punkt is tokenizer 
@@ -56,7 +64,6 @@ def response(user_response):
     flat = vals.flatten()
     flat.sort()
     req_tfidf=flat[-2]
-    
     if(user_response == ""):
         robo1_response=robo1_response+"Waiting for input ...."
         return robo1_response
@@ -69,73 +76,60 @@ def response(user_response):
 
 flag=True
 user="User"
-user_response=st.text_input("Hi please enter your name: ")
+user_response=input("Hi please enter your name: ")
 user=user_response
 i=0
-count=0
-r=""
+#count=0
+#r=""
 while (flag==True):
-    key1=i
-    new=[]
-    for i in range(15):
-        key1=i+1
+    #new=[]
+    #key1=i
+    for i in range(1000):
+        #key1=i+1
         if user_response!='':
-            user_response=st.text_input("\n"+user+":",key=key1)
+            user_response=input("\n"+user+":")
             user_response=user_response.lower()
             if(user_response.startswith('bye')!=True):
                 if(user_response.startswith("thanks") or user_response.startswith("thank")):
                     flag=False
-                    robo1_response="You're Welcome !"
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)   
+                    print("🤖:You're Welcome !")
+                    speech("You're Welcome !")   
                     flag=True
                     user_response=user_response.lower()
                 elif(user_response=="how are you?" or user_response=="how are you"):
                     flag=False
-                    robo1_response="All good!"
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)   
+                    speech("🤖:All good!")
+                    print("All good!")  
                     flag=True
                     user_response=user_response.lower()
                 elif(user_response=="can you help me?" or user_response=="i need your help"):
                     flag=False
-                    robo1_response="I would be pleased to help you!"
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)
+                    print("🤖:I would be pleased to help you!")
+                    speech("I would be pleased to help you!")
                     flag=True
                     user_response=user_response.lower()
                 elif(user_response.startswith("good")==True):
                     flag=False
-                    robo1_response=user_response
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)
+                    print("🤖:"+user_response)
+                    speech(user_response)
                     flag=True
                     user_response=user_response.lower()
                 elif "i love" in user_response:
                     flag=False
-                    robo1_response="That's Great!"
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)
+                    print("🤖:That's Great!")
+                    speech("That's Great!")
                     flag=True
                 elif "i like" in user_response:
                     flag=False
-                    robo1_response="That's Great!"
-                    st.write(robo1_response)
-                    count=count+1
-                    speech(robo1_response)
+                    print("🤖:That's Great!")
+                    speech("That's Great!")
                     flag=True
                 else:
                     if(greet(user_response)!=None):
                         flag=False
                         robo1_response=user_response
-                        st.write(" "+greet(robo1_response))
-                        count=count+1
-                        speech(robo1_response)
+                        print("🤖:"+greet(robo1_response))
+                        speech(" "+greet(robo1_response))
                         flag=True
                         user_response=user_response.lower()
                     else:
@@ -143,17 +137,13 @@ while (flag==True):
                         sent_tokens.append(user_response)
                         word_tokens=word_tokens+nltk.word_tokenize(user_response)
                         final_words=list(set(word_tokens))
-                        robo1_response=response(user_response)
-                        st.write(robo1_response)
-                        count=count+1
-                        speech(robo1_response)
+                        print("🤖:"+response(user_response))
+                        speech(response(user_response))
                         flag=True
                         sent_tokens.remove(user_response)
                         user_response=user_response.lower()
             else:
-                robo1_response="Bye! Take Care"
-                st.write(robo1_response)
-                count=count+1
-                speech(robo1_response)
+                print("🤖:Bye! Take Care")
+                speech("Bye! Take Care")
                 flag=False
                 break
